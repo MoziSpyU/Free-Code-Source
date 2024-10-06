@@ -1,0 +1,63 @@
+# Made by MoziSpyU
+
+import discord
+import fade 
+from fade import *
+from discord.ext import commands
+
+banner = """
+ ▄█     █▄     ▄████████  ▄█        ▄████████  ▄██████▄    ▄▄▄▄███▄▄▄▄      ▄████████      ▀█████████▄   ▄██████▄      ███     
+███     ███   ███    ███ ███       ███    ███ ███    ███ ▄██▀▀▀███▀▀▀██▄   ███    ███        ███    ███ ███    ███ ▀█████████▄ 
+███     ███   ███    █▀  ███       ███    █▀  ███    ███ ███   ███   ███   ███    █▀         ███    ███ ███    ███    ▀███▀▀██ 
+███     ███  ▄███▄▄▄     ███       ███        ███    ███ ███   ███   ███  ▄███▄▄▄           ▄███▄▄▄██▀  ███    ███     ███   ▀ 
+███     ███ ▀▀███▀▀▀     ███       ███        ███    ███ ███   ███   ███ ▀▀███▀▀▀          ▀▀███▀▀▀██▄  ███    ███     ███     
+███     ███   ███    █▄  ███       ███    █▄  ███    ███ ███   ███   ███   ███    █▄         ███    ██▄ ███    ███     ███     
+███ ▄█▄ ███   ███    ███ ███▌    ▄ ███    ███ ███    ███ ███   ███   ███   ███    ███        ███    ███ ███    ███     ███     
+ ▀███▀███▀    ██████████ █████▄▄██ ████████▀   ▀██████▀   ▀█   ███   █▀    ██████████      ▄█████████▀   ▀██████▀     ▄████▀   
+                         ▀                                                                                                     
+"""
+
+banner = fade.pinkred(banner)
+print(banner)
+print()
+
+# Initialiser le bot avec un préfixe, ici '!'
+intents = discord.Intents.default()
+intents.members = True  # Nécessaire pour recevoir des événements concernant les membres
+
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f'Bot connecté en tant que {bot.user}')
+
+@bot.event
+async def on_member_join(member):
+    # Remplace 'welcome-channel-id' par l'ID du canal où tu veux envoyer le message
+    channel_id =   # Remplace par l'ID du canal texte
+    channel = bot.get_channel(channel_id)
+    
+    if channel is not None:
+        # Crée le message de bienvenue
+        welcome_message = f'Bienvenue {member.mention} sur {member.guild.name} ! Nous sommes maintenant {member.guild.member_count} membres.'
+        # Envoie le message dans le canal spécifié
+        await channel.send(welcome_message)
+    else:
+        print(f'Le canal avec l\'ID {channel_id} n\'a pas été trouvé.')
+
+    # Attribuer un rôle au nouveau membre
+    # Remplace 'role-id' par l'ID du rôle que tu veux attribuer
+    role_id =   # Remplace par l'ID du rôle
+    role = discord.utils.get(member.guild.roles, id=role_id)
+    
+    if role is not None:
+        try:
+            await member.add_roles(role)
+            print(f'Rôle {role.name} attribué à {member.name}')
+        except Exception as e:
+            print(f'Erreur lors de l\'attribution du rôle : {e}')
+    else:
+        print(f'Le rôle avec l\'ID {role_id} n\'a pas été trouvé.')
+
+# Remplace 'UR BOT TOKEN' par le token de ton bot
+bot.run('UR BOT TOKEN')
