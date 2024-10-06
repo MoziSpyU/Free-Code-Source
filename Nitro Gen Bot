@@ -1,0 +1,52 @@
+# Made by MoziSpyU
+
+const { Client, GatewayIntentBits, Events } = require('discord.js');
+
+// Crée une instance du client Discord
+const client = new Client({ 
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
+});
+
+// Remplace 'TON_TOKEN' par le token de ton bot
+const TOKEN = 'UR TOKEN BOT';
+
+// Fonction pour générer une chaîne aléatoire de caractères
+function generateRandomCode(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+// Événement déclenché lorsque le bot est prêt
+client.once(Events.ClientReady, () => {
+  console.log('Le bot est prêt !');
+});
+
+// Événement déclenché lorsque le bot reçoit un message
+client.on(Events.MessageCreate, message => {
+  // Ignore les messages envoyés par le bot lui-même
+  if (message.author.bot) return;
+
+  // Vérifie si le message est une commande pour générer un lien
+  if (message.content === '!gen') {
+    // Génère le code aléatoire et crée le lien
+    const randomCode = generateRandomCode(16);
+    const giftLink = `https://discord.gift/${randomCode}`;
+
+    // Envoie le lien dans le canal
+    message.channel.send(`Voici un lien de cadeau Discord : ${giftLink}`);
+  }
+});
+
+// Connecte le bot à Discord avec le token
+client.login(TOKEN)
+  .then(() => console.log('Connexion réussie'))
+  .catch(error => console.error('Erreur de connexion:', error));
