@@ -1,0 +1,45 @@
+# Statut Bot
+# Made By MoziSpyU
+
+import discord
+import fade
+from fade import *
+from discord.ext import tasks, commands
+
+banner = """
+   ▄████████     ███        ▄████████     ███     ███    █▄      ███          ▀█████████▄   ▄██████▄      ███     
+  ███    ███ ▀█████████▄   ███    ███ ▀█████████▄ ███    ███ ▀█████████▄        ███    ███ ███    ███ ▀█████████▄ 
+  ███    █▀     ▀███▀▀██   ███    ███    ▀███▀▀██ ███    ███    ▀███▀▀██        ███    ███ ███    ███    ▀███▀▀██ 
+  ███            ███   ▀   ███    ███     ███   ▀ ███    ███     ███   ▀       ▄███▄▄▄██▀  ███    ███     ███   ▀ 
+▀███████████     ███     ▀███████████     ███     ███    ███     ███          ▀▀███▀▀▀██▄  ███    ███     ███     
+         ███     ███       ███    ███     ███     ███    ███     ███            ███    ██▄ ███    ███     ███     
+   ▄█    ███     ███       ███    ███     ███     ███    ███     ███            ███    ███ ███    ███     ███     
+ ▄████████▀     ▄████▀     ███    █▀     ▄████▀   ████████▀     ▄████▀        ▄█████████▀   ▀██████▀     ▄████▀   
+                                                                                                                  
+"""
+
+banner = fade.pinkred(banner)
+print(banner)
+print()
+
+# Initialiser le bot avec un préfixe, ici '!'
+intents = discord.Intents.default()
+intents.guilds = True
+intents.members = True  # Nécessaire pour obtenir le nombre de membres
+
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f'Bot connecté en tant que {bot.user}')
+    update_status.start()  # Démarrer la tâche de mise à jour du statut
+
+@tasks.loop(minutes=1)
+async def update_status():
+    for guild in bot.guilds:
+        member_count = guild.member_count
+        status_message = f"Serveur : {guild.name} | Membres : {member_count}"
+        await bot.change_presence(activity=discord.Game(name=status_message))
+
+# Remplace 'YOUR_BOT_TOKEN' par le token de ton bot
+bot.run('YOUR_BOT_TOKEN')
